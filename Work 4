@@ -1,0 +1,7 @@
+SELECT st.name, st.surname, st.n_group, st.date_birth, tt.monthes, tt.name
+FROM student st
+INNER JOIN
+(SELECT (to_char(sh.date_finish, 'MM')::numeric(10,0) + to_char(sh.date_finish, 'YYYY')::numeric(10,0) * 12) - (to_char(sh.date_start, 'MM')::numeric(10,0) + to_char(sh.date_start, 'YYYY')::numeric(10,0) * 12) as monthes, sh.student_id, hb.name
+FROM student_hobby sh, hobby1 hb
+WHERE hb.id = sh.id) tt
+ON tt.student_id = st.id
