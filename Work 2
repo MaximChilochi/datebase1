@@ -1,0 +1,5 @@
+SELECT st.name, st.surname, sh.date_start
+FROM student st, student_hobby sh
+WHERE st.id = sh.student_id AND sh.date_finish IS NULL
+ORDER BY sh.date_start
+LIMIT 1
