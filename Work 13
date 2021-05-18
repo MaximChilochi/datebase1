@@ -1,0 +1,7 @@
+SELECT st.id, st.name, st.surname, st.date_birth, SUBSTRING(st.n_group::varchar,1,1) as course
+FROM student st
+WHERE st.score = 1
+EXCEPT SELECT DISTINCT stb.id, stb.name, stb.surname, stb.date_birth, SUBSTRING(stb.n_group::varchar,1,1) as course
+FROM student_hobby sh, student stb
+WHERE stb.id = sh.student_id AND sh.date_finish IS NULL
+ORDER BY course, date_birth
