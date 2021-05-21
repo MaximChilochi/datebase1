@@ -1,4 +1,6 @@
- №1 Вывести все имена и фамилии студентов, и название хобби, которым занимается этот студент.
+МНОГОТАБЛИЧНЫЕ
+№1 Вывести все имена и фамилии студентов, и название хобби, которым занимается этот студент.
+
 SELECT st.name, st.surname, hb.name
 FROM student st, hobby1 hb, student_hobby sh
 WHERE sh.student_id = st.id AND sh.hobby_id = hb.id
@@ -134,4 +136,75 @@ ON tt.student_id = st.id
 ORDER BY countofdays DESC LIMIT 10
 ) tt
 ON tt.id = st.id
+
+Однотабличные запросы
+№1 Вывести всеми возможными способами имена и фамилии студентов, средний балл которых от 4 до 4.5
+SELECT * FROM student st WHERE st.score BETWEEN 4.0 and 4.5
+
+№2 Познакомиться с функцией CAST. Вывести при помощи неё студентов заданного курса (использовать Like)
+SELECT st.name, st.surname FROM student st WHERE CAST (st.n_group AS varchar) LIKE '%20'
+
+№3 Вывести всех студентов, отсортировать по убыванию номера группы и имени от а до я
+SELECT * FROM student st ORDER BY st.n_group, st.name
+
+№4 Вывести студентов, средний балл которых больше 4 и отсортировать по баллу от большего к меньшему
+SELECT * FROM student st WHERE st.score > 4 ORDER BY st.score DESC
+
+№5 Вывести на экран название и риск футбола и хоккея(т.к у меня нет хоккея, я вывел Волейбол.)
+SELECT name, risk FROM hobby1 h WHERE h.name IN ('Футбол', 'Волейбол')
+
+№6 Вывести id хобби и id студента которые начали заниматься хобби между двумя заданными датами (выбрать самим) и студенты должны до сих пор заниматься хобби
+SELECT std.student_id, std.hobby_id FROM student_hobby std WHERE (std.date_finish BETWEEN '2019-01-15' AND '2021-10-12')
+AND
+(std.date_finish IS NULL)
+
+№7 Вывести студентов, средний балл которых больше 4.5 и отсортировать по баллу от большего к меньшему
+SELECT * FROM student st WHERE st.score >= 4.5 ORDER BY st.score DESC
+
+
+№9 Выведите хобби и с использованием условного оператора сделайте риск словами:
+
+>=8 - очень высокий
+>=6 & <8 - высокий
+>=4 & <8 - средний
+>=2 & <4 - низкий
+<2 - очень низкий
+SELECT *,
+CASE
+WHEN bb.risk >= 8 THEN 'Очень высокий'
+WHEN bb.risk < 8 AND bb.risk >= 6 THEN 'Высокий'
+WHEN bb.risk < 6 AND bb.risk >= 4 THEN 'Средний'
+WHEN bb.risk < 4 AND bb.risk >= 2 THEN 'Низкий'
+ELSE 'Очень низкий'
+END AS Category
+FROM hobby1 bb
+
+Групповые функции
+
+№1 SELECT count(n_group), n_group
+FROM student
+GROUP BY n_group
+
+№2 Выведите на экран для каждой группы максимальный средний балл
+SELECT max(score), n_group
+FROM student
+GROUP BY n_group
+
+№3 Подсчитать количество студентов с каждой фамилией 
+SELECT count(surname), surname
+FROM student
+GROUP BY surname
+
+
+№4 Подсчитать студентов, которые родились в каждом году
+SELECT count(*), to_char(date_birth,'YYYY')
+FROM student
+GROUP BY to_char(date_birth,'YYYY')
+
+
+№8 Для каждой группы в одном запросе вывести количество студентов, максимальный балл в группе, средний балл в группе, минимальный балл в группе
+SELECT n_group, count(n_group), max(score), min(score)
+FROM student
+GROUP BY n_group
+
 
