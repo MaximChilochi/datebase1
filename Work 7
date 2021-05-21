@@ -1,9 +1,0 @@
-SELECT hb.name, hb.risk, -1 * (to_char(tt.dlit, 'YYYY')::numeric(5,0) * 12 + to_char(tt.dlit, 'MM')::numeric(5,0)) + (to_char(now(), 'YYYY')::numeric(5,0) * 12 + to_char(now(),'MM')::numeric(5,0))
-FROM hobby1 hb
-INNER JOIN(
-SELECT sh.hobby_id, min(sh.date_start) as dlit, sh.student_id
-FROM student_hobby sh
-GROUP BY sh.student_id, sh.hobby_id
-HAVING sh.student_id = 3
-LIMIT 1) tt
-ON tt.hobby_id = hb.id
