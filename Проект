@@ -1,0 +1,71 @@
+CREATE TABLE USERS(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	surname VARCHAR(255) NOT NULL,
+	status BOOL NOT NULL,
+	roots BOOL NOT NULL)
+	
+--on conflict--
+	
+CREATE TABLE ALARM(
+	id SERIAL PRIMARY KEY,
+	date_of_incedent TIMESTAMP NOT NULL,
+	id_room INTEGER NOT NULL REFERENCES ROOMS(id))
+	
+INSERT INTO ALARM(date_of_incedent, id_room)
+VALUES(NOW(), 15)
+
+--конец on conflict--
+	
+CREATE TABLE ROOMS(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(255) NOT NULL)
+	
+CREATE TABLE HISTORY(
+	id SERIAL PRIMARY KEY,
+	id_user INTEGER NOT NULL REFERENCES USERS(id),
+	allowed_or_not BOOL NOT NULL,
+	datetime_enter TIMESTAMP NOT NULL,
+	datetime_exit TIMESTAMP,
+	was_the_violation BOOL NOT NULL)
+
+CREATE TABLE ROOMS_USERS(
+	id SERIAL NOT NULL,
+	id_user INTEGER NOT NULL REFERENCES USERS(id),
+	id_room INTEGER NOT NULL REFERENCES ROOMS(id),
+	type_of_enter INTEGER NOT NULL,
+	status_of_recuest BOOL NOT NULL,
+	time_allowed TIME)
+	
+1	
+INSERT INTO USERS (name, surname, status, roots)
+VALUES ('Иван', 'Иванов', false, false)
+
+2
+INSERT INTO ROOMS_USERS(id_user, id_room, type_of_enter, status_of_recuest, time_allowed)
+VALUES ('2', '5', 1, false, NULL)
+
+3
+INSERT INTO HISTORY(id_user, allowed_or_not, date_enter, time_enter, time_exit, was_the_violation)
+VALUES(5, false, '2021-12-05', '23:02:21', NULL, false) (данный запрос зависит от того, как отработает программная реализация, она будет искать пользователя среди таблицы ROOMS_USERS, если не найдёт, то беда)
+
+4
+SELECT *
+FROM ROOMS_USERS
+WHERE id_user = 3
+
+(Тревога о превышении времени нахождения в помещении, будет реализовано в программной реализации, т.к. она будет постоянно чекать разницу во времени)
+
+(Если инцидент произошёл, смотри запрос №3)
+
+5
+INSERT INTO ROOMS_USERS(id_user, id_room, type_of_enter, status_of_recuest, time_allowed)
+VALUES ('2', '5', 1, true, NULL)
+
+9
+UPDATE ROOMS_USERS SET time_allowed = NULL WHERE id_user = 2 AND id_room = 5
+
+10
+SELECT *
+FROM HISTORY
+WHERE allowed_or_not = false
